@@ -13,14 +13,14 @@ export class Client {
   cif: string;
 
   @Column({ type: 'varchar', unique: true })
-  razonSocial: string;
+  name: string;
 
   @Column({ type: 'varchar' })
-  direccion: string;
+  address: string;
 
   @Column({ type: 'varchar' })
-  municipio: string;
+  city: string;
 
   @Column({ type: 'varchar' })
-  provincia: string;
+  province: string;
 }
