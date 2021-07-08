@@ -1,6 +1,8 @@
-import { Role } from './../role.enum';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, BeforeInsert, Entity } from 'typeorm';
+import { Role } from '../role.enum';
 import * as bcrypt from 'bcrypt';
+import { Exclude } from 'class-transformer';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('increment')
@@ -13,6 +15,7 @@ export class User {
   email: string;
 
   @Column({ type: 'varchar' })
+  @Exclude()
   password: string;
 
   @Column({ type: 'enum', enum: Role })
@@ -23,4 +26,7 @@ export class User {
     const salt = bcrypt.genSaltSync();
     this.password = bcrypt.hashSync(this.password, salt);
   }
+
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
 }

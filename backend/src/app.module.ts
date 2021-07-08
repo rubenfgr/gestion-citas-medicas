@@ -5,12 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './app/auth/auth.module';
+import { ClientsModule } from './app/clients/clients.module';
+import { ContractsModule } from './app/contracts/contracts.module';
+import { MeetingsModule } from './app/meetings/meetings.module';
+import { UsersModule } from './app/users/users.module';
 import configuration, { cf } from './config/configuration';
-import { ClientsModule } from './clients/clients.module';
-import { MeetingsModule } from './meetings/meetings.module';
-import { ContractsModule } from './contracts/contracts.module';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
-      cache: true,
+      envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -39,14 +39,15 @@ import { AuthModule } from './auth/auth.module';
         },
         synchronize: configService.get(cf.database.synchronize),
         logger: 'simple-console',
+        autoLoadEntities: true,
       }),
       inject: [ConfigService],
     }),
-    ClientsModule,
     MeetingsModule,
-    ContractsModule,
     UsersModule,
     AuthModule,
+    ContractsModule,
+    ClientsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
