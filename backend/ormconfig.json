@@ -1,0 +1,15 @@
+{
+  "type": "mysql",
+  "host": "localhost",
+  "port": 3306,
+  "username": "admin",
+  "password": "admin",
+  "database": "gestion_citas_medicas",
+  "entities": ["src/**/*.entity{.ts,.js}"],
+  "migrationsTableName": "migrations",
+  "migrations": ["migrations/*.{.ts,.js}"],
+  "cli": {
+    "migrationsDir": "migrations",
+    "entitiesDir": ["/**/*.entity{.ts,.js}"]
+  }
+}

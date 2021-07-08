@@ -32,6 +32,11 @@ import { AuthModule } from './auth/auth.module';
         password: configService.get(cf.database.password),
         database: configService.get(cf.database.database),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        migrationsTableName: 'migrations',
+        migrations: ['migration/*.{.ts,.js}'],
+        cli: {
+          migrationsDir: 'migration',
+        },
         synchronize: configService.get(cf.database.synchronize),
         logger: 'simple-console',
       }),

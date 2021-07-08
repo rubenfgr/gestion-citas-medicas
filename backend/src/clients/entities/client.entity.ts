@@ -1,6 +1,7 @@
 import { Meeting } from './../../meetings/entities/meeting.entity';
 import {
   Column,
+  Entity,
   JoinColumn,
   OneToMany,
   OneToOne,
@@ -8,6 +9,7 @@ import {
 } from 'typeorm';
 import { User } from './../../users/entities/user.entity';
 
+@Entity()
 export class Client {
   @PrimaryGeneratedColumn('increment')
   id: number;
