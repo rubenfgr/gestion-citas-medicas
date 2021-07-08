@@ -1,0 +1,25 @@
+version: '3.8'
+services: 
+    db:
+        container_name: gcm_db
+        image: mariadb
+        restart: always
+        ports: 
+            - 3306:3306
+        environment: 
+            MYSQL_ROOT_PASSWORD: root12345
+            MYSQL_USER: admin
+            MYSQL_PASSWORD: admin
+            MYSQL_DATABASE: gestion_citas_medicas
+        volumes: 
+            - vol-gcm-db:/var/lib/mysql
+
+    adminer:
+        container_name: gcm_adminer
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+
+volumes:
+    vol-gcm-db:
