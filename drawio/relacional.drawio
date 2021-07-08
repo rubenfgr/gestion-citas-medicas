@@ -1,6 +1,6 @@
 <mxfile>
     <diagram id="luxfu0No5xx-AM6F0GxE" name="Page-1">
-        <mxGraphModel dx="1068" dy="327" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+        <mxGraphModel dx="285" dy="327" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -31,10 +31,10 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="10" value="citas" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneLine=0;" parent="1" vertex="1">
-                    <mxGeometry x="400" y="435" width="160" height="145" as="geometry"/>
+                    <mxGeometry x="400" y="435" width="160" height="125" as="geometry"/>
                 </mxCell>
-                <mxCell id="11" value="PK id&#10;FK idCliente&#10;fecha&#10;hora&#10;reconocimientos_solicitados&#10;reconocmientos_realizados&#10;confirmada" style="align=left;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;rounded=0;glass=0;" parent="10" vertex="1">
-                    <mxGeometry y="30" width="160" height="115" as="geometry"/>
+                <mxCell id="11" value="PK id&#10;FK idCliente&#10;fecha&#10;reconocimientos_solicitados&#10;reconocmientos_realizados&#10;confirmada" style="align=left;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;rounded=0;glass=0;" parent="10" vertex="1">
+                    <mxGeometry y="30" width="160" height="95" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=0;entryDy=0;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=1;" parent="1" source="3" target="10" edge="1">
                     <mxGeometry relative="1" as="geometry"/>

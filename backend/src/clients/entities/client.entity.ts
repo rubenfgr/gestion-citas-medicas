@@ -1,4 +1,11 @@
-import { Column, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Meeting } from './../../meetings/entities/meeting.entity';
+import {
+  Column,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './../../users/entities/user.entity';
 
 export class Client {
@@ -8,6 +15,9 @@ export class Client {
   @OneToOne(() => User)
   @JoinColumn()
   user: User;
+
+  @OneToMany(() => Meeting, (meeting) => meeting.client)
+  meetings: Meeting[];
 
   @Column({ type: 'varchar', unique: true })
   cif: string;
