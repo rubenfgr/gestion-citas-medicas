@@ -28,7 +28,9 @@ export class UsersController {
     @Query() paginatorDto: PaginatorDto,
     @Query('isActive') isActive: any,
   ) {
-    isActive === 'true' || isActive === undefined || null ? (isActive = true) : (isActive = false);
+    isActive === 'true' || isActive === undefined || null
+      ? (isActive = true)
+      : (isActive = false);
     return this.usersService.findAll(paginatorDto, isActive);
   }
 

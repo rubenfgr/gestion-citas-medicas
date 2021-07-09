@@ -1,9 +1,11 @@
-interface IContractCreateResponse {
+import { IClient } from '../../clients/interfaces/client.interfaces';
+
+export interface IContractCreateResponse {
   ok: boolean;
   contract: IContract;
 }
 
-interface IContract {
+export interface IContract {
   dateStart: string;
   dateEnd: string;
   clientId: string;
@@ -14,12 +16,13 @@ interface IContract {
   examsDone: number;
 }
 
-interface IContractGetAllResponse {
+export interface IContractGetAllResponse {
   ok: boolean;
   contracts: IContract[];
   total?: number;
 }
 
-interface IContractGetByClientIdResponse extends IContractGetAllResponse {}
+export interface IContractGetByClientIdResponse
+  extends IContractGetAllResponse {}
 
-interface IContractGetByIdResponse extends IContractCreateResponse {}
+export interface IContractGetByIdResponse extends IContractCreateResponse {}

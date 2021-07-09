@@ -1,11 +1,13 @@
-interface IClientCreateResponse {
+import { IUser } from '../../users/interfaces/users.interfaces';
+
+export interface IClientCreateResponse {
   ok: boolean;
   client: IClient;
 }
 
-interface IClientGetByIdResponse extends IClientCreateResponse {}
+export interface IClientGetByIdResponse extends IClientCreateResponse {}
 
-interface IClient {
+export interface IClient {
   userId: string;
   name: string;
   address: string;
@@ -16,7 +18,7 @@ interface IClient {
   id: number;
 }
 
-interface IClientGetAllReponse {
+export interface IClientGetAllReponse {
   ok: boolean;
   clients: IClient[];
   total: number;

@@ -1,11 +1,11 @@
-import { IsNumberString, IsDate, IsDateString } from 'class-validator';
+import { IsDateString, IsNumber } from 'class-validator';
 export class CreateMeetingDto {
-  @IsNumberString()
+  @IsNumber()
   contractId: number;
 
   @IsDateString()
   date: Date;
 
-  @IsNumberString()
+  @IsNumber()
   examsRequired: number;
 }

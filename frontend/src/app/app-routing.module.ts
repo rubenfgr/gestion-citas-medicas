@@ -1,3 +1,4 @@
+import { NavigationComponent } from './shared/pages/navigation/navigation.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorComponent } from './shared/pages/error/error.component';
@@ -8,19 +9,10 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'meetings',
-        pathMatch: 'full',
-      },
-      {
-        path: 'meetings',
         loadChildren: () =>
-          import('./meetings/meetings.module').then((m) => m.MeetingsModule),
+          import('./shared/shared.module').then((m) => m.SharedModule),
       },
-      {
-        path: 'auth',
-        loadChildren: () =>
-          import('./auth/auth.module').then((m) => m.AuthModule),
-      },
+
       {
         path: '404',
         component: ErrorComponent,
