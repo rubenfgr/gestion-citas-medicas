@@ -8,6 +8,9 @@ export default () => ({
     database: process.env.DB_DATABASE,
     synchronize: process.env.DB_SYNCHRONIZE,
   },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+  },
 });
 
 export const cf = {
@@ -19,5 +22,8 @@ export const cf = {
     password: 'database.password',
     database: 'database.database',
     synchronize: 'database.synchronize',
+  },
+  jwt: {
+    secret: 'jwt.secret',
   },
 };

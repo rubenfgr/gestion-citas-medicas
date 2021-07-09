@@ -64,6 +64,16 @@ export class UsersService {
     return { ok: true, user: userMapped };
   }
 
+  async findOneByUsername(username: string) {
+    const user = await this.usersRepository.findOne({ where: { username } });
+    if (!user) {
+      throw new BadRequestException(
+        `No existe ningún usuario con el nombre ${username}`,
+      );
+    }
+    return { ok: true, user };
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     const updateResult = await this.usersRepository.update(
       { id },
