@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './app/auth/auth.module';
-import { JwtAuthGuard } from './app/auth/jwt-auth.guard';
 import { ClientsModule } from './app/clients/clients.module';
 import { ContractsModule } from './app/contracts/contracts.module';
 import { MeetingsModule } from './app/meetings/meetings.module';
