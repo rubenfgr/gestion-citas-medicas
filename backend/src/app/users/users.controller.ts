@@ -1,17 +1,18 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
-  Delete,
-  Put,
+  ParseBoolPipe,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { PaginatorDto } from '../shared/dto/paginator.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ParseIntPipe } from '@nestjs/common';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -23,8 +24,12 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(
+    @Query() paginatorDto: PaginatorDto,
+    @Query('isActive') isActive: any,
+  ) {
+    isActive === 'true' || isActive === undefined || null ? (isActive = true) : (isActive = false);
+    return this.usersService.findAll(paginatorDto, isActive);
   }
 
   @Get(':id')
@@ -32,7 +37,7 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -40,13 +45,11 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.removeOrActivate(id, false);
-  }
-
-  @Patch(':id')
-  activate(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.removeOrActivate(id, true);
+  @Patch('activate/:id')
+  removeOrActivate(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('isActive', ParseBoolPipe) isActive: boolean,
+  ) {
+    return this.usersService.removeOrActivate(id, isActive);
   }
 }

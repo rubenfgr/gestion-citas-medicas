@@ -1,13 +1,20 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Client } from '../../clients/entities/client.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn
+} from 'typeorm';
+import { Contract } from './../../contracts/entities/contract.entity';
 
 @Entity()
 export class Meeting {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ManyToOne(() => Client, (client) => client.meetings)
-  client: Client;
+  @ManyToOne(() => Contract, (contract) => contract.meetings)
+  @JoinColumn()
+  contract: Contract;
 
   @Column({ type: 'timestamp' })
   date: Date;
@@ -15,9 +22,12 @@ export class Meeting {
   @Column({ type: 'tinyint' })
   examsRequired: number;
 
-  @Column({ type: 'tinyint' })
+  @Column({ type: 'tinyint', default: 0 })
   examsDone: number;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: false })
   confirmed: boolean;
+
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
 }

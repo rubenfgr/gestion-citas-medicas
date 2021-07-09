@@ -1,12 +1,12 @@
-import { Meeting } from './../../meetings/entities/meeting.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
+import { Contract } from './../../contracts/entities/contract.entity';
 import { User } from './../../users/entities/user.entity';
 
 @Entity()
@@ -18,8 +18,8 @@ export class Client {
   @JoinColumn()
   user: User;
 
-  @OneToMany(() => Meeting, (meeting) => meeting.client)
-  meetings: Meeting[];
+  @OneToMany(() => Contract, (contract) => contract.client)
+  contracts: Contract[];
 
   @Column({ type: 'varchar', unique: true })
   cif: string;

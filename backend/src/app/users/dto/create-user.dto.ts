@@ -1,4 +1,10 @@
-import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
+import {
+  IsBooleanString,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+} from 'class-validator';
 import { Role } from '../role.enum';
 
 export class CreateUserDto {

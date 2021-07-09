@@ -1,6 +1,7 @@
+import { PaginatorDto } from './../shared/dto/paginator.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { classToPlain } from 'class-transformer';
+import { classToClass } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,14 +33,24 @@ export class UsersService {
     user.password = createUserDto.password;
     user.role = createUserDto.role;
     user = await this.usersRepository.save(user);
-    const plainUser = classToPlain(user);
+    const plainUser = classToClass(user);
     return { ok: true, user: plainUser };
   }
 
-  async findAll() {
-    const users = await this.usersRepository.find();
-    const usersMapped = users.map((user) => classToPlain(user));
-    return { ok: true, users: usersMapped };
+  async findAll(paginatorDto: PaginatorDto, isActive: boolean) {
+    const users = await this.usersRepository.find({
+      ...paginatorDto,
+      where: { isActive },
+    });
+    const total = await this.usersRepository.count();
+    const actived = await this.usersRepository.count({
+      where: { isActive: true },
+    });
+    const deactived = await this.usersRepository.count({
+      where: { isActive: false },
+    });
+    const usersMapped = users.map((user) => classToClass(user));
+    return { ok: true, users: usersMapped, total, actived, deactived };
   }
 
   async findOne(id: number) {
@@ -49,17 +60,11 @@ export class UsersService {
         `No existe ningún usuario con el identificador ${id}`,
       );
     }
-    const userMapped = classToPlain(user);
+    const userMapped = classToClass(user);
     return { ok: true, user: userMapped };
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.usersRepository.findOne(id);
-    if (!user) {
-      throw new BadRequestException(
-        `No existe ningún usuario con el identificador ${id}`,
-      );
-    }
     const updateResult = await this.usersRepository.update(
       { id },
       updateUserDto,
@@ -68,12 +73,6 @@ export class UsersService {
   }
 
   async removeOrActivate(id: number, isActive: boolean) {
-    const user = await this.usersRepository.findOne(id);
-    if (!user) {
-      throw new BadRequestException(
-        `No existe ningún usuario con el identificador ${id}`,
-      );
-    }
     const updateResult = await this.usersRepository.update(
       { id },
       { isActive },
