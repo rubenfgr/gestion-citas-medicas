@@ -1,7 +1,15 @@
+import { CreateUserDto } from './../users/dto/create-user.dto';
 import { Role } from './../users/role.enum';
 import { Roles } from './roles.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { RolesGuard } from './roles.guard';
@@ -16,14 +24,15 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @Post('logout')
-  logout() {
-    return this.authService.logout();
+  @Post('register')
+  register(@Body() createUserDto: CreateUserDto) {
+    return this.authService.register(createUserDto);
   }
 
-  @Post('register')
-  register() {
-    return this.authService.register();
+  @UseGuards(JwtAuthGuard)
+  @Get('renew')
+  renew(@Request() req) {
+    return this.authService.renew(req.user);
   }
 
   @Roles(Role.CLIENT)

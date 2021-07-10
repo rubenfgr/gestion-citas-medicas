@@ -1,3 +1,4 @@
+import { CreateUserDto } from './../users/dto/create-user.dto';
 import { User } from './../users/entities/user.entity';
 import { UsersService } from './../users/users.service';
 import { Injectable } from '@nestjs/common';
@@ -28,11 +29,15 @@ export class AuthService {
     };
   }
 
-  logout() {
-    return 'logout service';
+  renew(user: User) {
+    const access_token = this.jwtService.sign({ uid: user.id });
+    return {
+      access_token,
+      user,
+    };
   }
 
-  register() {
-    return 'register service';
+  register(createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 }

@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Citas",
+    "path": "meetings"
+  },
+  {
+    "title": "Clientes",
+    "path": "clients"
+  },
+  {
+    "title": "Usuarios",
+    "path": "users"
+  },
+  {
+    "title": "Contratos",
+    "path": "contracts"
+  }
+]
