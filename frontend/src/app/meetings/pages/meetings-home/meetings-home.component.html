@@ -1,0 +1,14 @@
+<mat-toolbar class="d-flex justify-content-between">
+
+  <h2>Citas</h2>
+
+  <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+    <mat-button-toggle routerLink="/meetings/calendar">Calendario</mat-button-toggle>
+    <mat-button-toggle routerLink="/meetings/list">Listado</mat-button-toggle>
+  </mat-button-toggle-group>
+
+</mat-toolbar>
+
+<div class="container">
+  <router-outlet></router-outlet>
+</div>

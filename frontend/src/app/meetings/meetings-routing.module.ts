@@ -1,3 +1,4 @@
+import { MeetingsHomeComponent } from './pages/meetings-home/meetings-home.component';
 import { MeetingsListComponent } from './pages/meetings-list/meetings-list.component';
 import { MeetingsCalendarComponent } from './pages/meetings-calendar/meetings-calendar.component';
 
@@ -7,6 +8,7 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
+    component: MeetingsHomeComponent,
     children: [
       { path: 'calendar', component: MeetingsCalendarComponent },
       { path: 'list', component: MeetingsListComponent },

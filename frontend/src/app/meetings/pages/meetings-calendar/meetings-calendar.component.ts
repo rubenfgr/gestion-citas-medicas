@@ -1,5 +1,6 @@
 import { MeetingsService } from './../../services/meetings.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CalendarOptions, FullCalendarComponent } from '@fullcalendar/angular';
 
 @Component({
   selector: 'app-meetings-calendar',
@@ -7,31 +8,22 @@ import { Component, OnInit } from '@angular/core';
   styles: [],
 })
 export class MeetingsCalendarComponent implements OnInit {
-  constructor(private meetingsService: MeetingsService) {}
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
-  ngOnInit(): void {
-    /* this.meetingsService.findAll().subscribe((res) => {
-      console.log(res);
-    }); */
+  calendarOptions: CalendarOptions = {
+    initialView: 'dayGridMonth',
+    locale: 'es',
+    dateClick: this.handleDateClick.bind(this),
+    eventClick: (info) => alert(JSON.stringify(info.event)),
+    events: [{ date: new Date('2021-07-15'), title: 'Omg' }],
+  };
 
-    /* this.meetingsService
-      .create({
-        contractId: 1,
-        date: new Date('2021-10-10'),
-        examsRequired: 5,
-      })
-      .subscribe((res) => {
-        console.log(res);
-      }); */
+  constructor() {}
 
-    this.meetingsService
-      .update(1, {
-        date: new Date('2021-10-10'),
-        examsRequired: 20,
-      })
-      .subscribe((res) => console.log(res));
-    /* this.meetingsService
-      .removeOrActive(1, false)
-      .subscribe((res) => console.log(res)); */
+  handleDateClick(arg: any) {
+    console.log(arg.event.title);
+    alert(JSON.stringify(arg));
   }
+
+  ngOnInit(): void {}
 }
