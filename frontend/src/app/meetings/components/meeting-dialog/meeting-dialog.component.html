@@ -1,0 +1,66 @@
+<div>
+  <h1 mat-dialog-title>
+    {{ meeting?.contract?.client?.name }}
+    <span class="text-danger" *ngIf="!meeting?.isActive">Finalizada</span>
+  </h1>
+  <div class="d-flex gap-2 flex-wrap flex-row">
+    <mat-form-field>
+      <mat-label>Hora de la cita</mat-label>
+      <input
+        [disabled]="meeting && (meeting.confirmed || !meeting.isActive)"
+        [(ngModel)]="time"
+        matInput
+        type="time"
+        name="time"
+        id="time"
+      />
+    </mat-form-field>
+    <div>
+      <button
+        [disabled]="meeting && (meeting.confirmed || !meeting.isActive)"
+        (click)="save()"
+        mat-raised-button
+        color="primary"
+      >
+        Guardar
+      </button>
+    </div>
+  </div>
+  <div class="d-flex gap-2 flex-wrap flex-row">
+    <mat-form-field>
+      <mat-label>Reconocimientos realizados</mat-label>
+      <input
+        [disabled]="meeting && (!meeting.confirmed || !meeting.isActive)"
+        [(ngModel)]="examsDone"
+        matInput
+        type="number"
+        name="time"
+        id="time"
+      />
+    </mat-form-field>
+    <div>
+      <button
+        [disabled]="meeting && (!meeting.confirmed || !meeting.isActive)"
+        (click)="finalize()"
+        mat-raised-button
+        color="primary"
+      >
+        Finalizar
+      </button>
+    </div>
+  </div>
+</div>
+<div mat-dialog-content class="pt-2">
+  <pre class="p-2 bg-dark text-white">{{ meeting | json }}</pre>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="meeting" cdkFocusInitial>Ok</button>
+  <button
+    mat-raised-button
+    color="accent"
+    [routerLink]="['/meetings/one', meeting]"
+    matDialogClose
+  >
+    Ver
+  </button>
+</div>

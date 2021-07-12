@@ -1,6 +1,6 @@
 import { IRoute } from './../../interfaces/route.interface';
 import { NavigationService } from './../../services/navigation.service';
-import { IUser } from './../../../users/interfaces/users.interfaces';
+import { IUser } from '../../../users/interfaces/users-res.interfaces';
 import { AuthService } from './../../../auth/services/auth.service';
 import { Component } from '@angular/core';
 

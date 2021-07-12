@@ -16,11 +16,4 @@ export class CreateUserDto {
 
   @IsNotEmpty({ message: `El password es requerido` })
   password: string;
-
-  @IsEnum(Role, {
-    message: `El rol debe ser uno de los siguientes valores: ${Object.values(
-      Role,
-    )}`,
-  })
-  role: Role;
 }

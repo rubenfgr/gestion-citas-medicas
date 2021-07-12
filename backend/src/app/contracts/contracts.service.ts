@@ -46,15 +46,27 @@ export class ContractsService {
   }
 
   async findAll(paginatorDto: PaginatorDto) {
-    const contracts = await this.contractsRepository.find(paginatorDto);
+    const contracts = await this.contractsRepository.find({
+      ...paginatorDto,
+    });
+    const actived = await this.contractsRepository.count({
+      where: { isActive: true },
+    });
+    const deactived = await this.contractsRepository.count({
+      where: { isActive: false },
+    });
     const total = await this.contractsRepository.count();
-    return { ok: true, contracts, total };
+    return { ok: true, contracts, total, actived, deactived };
   }
 
   async findByClientId(clientId: number, isActive?: boolean) {
     let contracts: Contract[] = [];
     contracts = await this.contractsRepository.find({
       where: { client: { id: clientId }, isActive },
+      join: {
+        alias: 'contract',
+        leftJoinAndSelect: { client: 'contract.client' },
+      },
     });
     return { ok: true, contracts };
   }

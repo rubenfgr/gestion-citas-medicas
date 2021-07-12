@@ -16,7 +16,7 @@ export class Meeting {
   @JoinColumn()
   contract: Contract;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'datetime' })
   date: Date;
 
   @Column({ type: 'tinyint' })

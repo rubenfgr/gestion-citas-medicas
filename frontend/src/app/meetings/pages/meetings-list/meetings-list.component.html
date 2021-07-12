@@ -1,1 +1,87 @@
-<p>meetings-list works!</p>
+<mat-form-field appearance="standard" class="w-100">
+  <mat-label>Filter</mat-label>
+  <input
+    matInput
+    (keyup)="applyFilter($event)"
+    placeholder="Filtrar por..."
+    #input
+  />
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+  <table class="w-100" mat-table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="asc" matSortDisableClear>
+    <!-- Client Column -->
+    <ng-container matColumnDef="client">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Cliente</th>
+      <td mat-cell *matCellDef="let meeting">
+        {{ meeting.contract.client.name }}
+      </td>
+    </ng-container>
+
+    <!-- Date Column -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+      <td mat-cell *matCellDef="let meeting">
+        {{ meeting.date | date: "dd/MM/Y HH:mm:ss":"UTC" }}
+      </td>
+    </ng-container>
+
+    <!-- examsRequired Column -->
+    <ng-container matColumnDef="examsRequired">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Reconocimientos solicitados
+      </th>
+      <td mat-cell *matCellDef="let meeting" class="text-center">
+        {{ meeting.examsRequired }}
+      </td>
+    </ng-container>
+
+    <!-- examsDone Column -->
+    <ng-container matColumnDef="examsDone">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Reconocimientos realizados
+      </th>
+      <td mat-cell *matCellDef="let meeting" class="text-center">
+        {{ meeting.examsDone }}
+      </td>
+    </ng-container>
+
+    <!-- confirmed Column -->
+    <ng-container matColumnDef="confirmed">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Confirmada</th>
+      <td
+        mat-cell
+        *matCellDef="let meeting"
+        class="text-center"
+        [ngStyle]="
+          meeting.confirmed
+            ? { backgroundColor: '#BBE998' }
+            : { backgroundColor: '#E99898' }
+        "
+      >
+        {{ meeting.confirmed ? "Si" : "No" }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      (click)="openDialog(row)"
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+    ></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">
+        No existen datos coincidentes con: "{{ input.value }}"
+      </td>
+    </tr>
+  </table>
+
+  <mat-paginator
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    [length]="length"
+    (page)="pageEvent = pageChange($event)"
+    showFirstLastButtons
+  ></mat-paginator>
+</div>

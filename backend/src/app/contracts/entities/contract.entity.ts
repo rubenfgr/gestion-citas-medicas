@@ -21,10 +21,10 @@ export class Contract {
   @OneToMany(() => Meeting, (meeting) => meeting.contract)
   meetings: Meeting[];
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'date' })
   dateStart: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'date' })
   dateEnd: Date;
 
   @Column({ type: 'tinyint' })

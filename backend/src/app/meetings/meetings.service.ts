@@ -1,12 +1,14 @@
+import { join } from 'path';
+import { BadRequestException, Injectable, HttpException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Between, Repository } from 'typeorm';
 import { ClientsService } from './../clients/clients.service';
 import { ContractsService } from './../contracts/contracts.service';
+import { DatesBetweenDto } from './../shared/dto/dates-between.dto';
 import { PaginatorDto } from './../shared/dto/paginator.dto';
-import { Meeting } from './entities/meeting.entity';
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CreateMeetingDto } from './dto/create-meeting.dto';
 import { UpdateMeetingDto } from './dto/update-meeting.dto';
-import { Repository } from 'typeorm';
+import { Meeting } from './entities/meeting.entity';
 
 @Injectable()
 export class MeetingsService {
@@ -43,11 +45,145 @@ export class MeetingsService {
     return { ok: true, meeting };
   }
 
-  async findAll(paginatorDto: PaginatorDto, isActive) {
+  async findAll(paginatorDto: PaginatorDto) {
     const meetings = await this.meetingsRepository.find({
       ...paginatorDto,
-      where: { isActive },
+      order: { date: 'ASC' },
     });
+    const actived = await this.meetingsRepository.count({
+      where: { isActive: true },
+    });
+    const deactived = await this.meetingsRepository.count({
+      where: { isActive: false },
+    });
+    const total = await this.meetingsRepository.count();
+    return { ok: true, meetings, actived, deactived, total };
+  }
+
+  async findAllBetweenDates(
+    paginatorDto: PaginatorDto,
+    datesBetweenDto: DatesBetweenDto,
+  ) {
+    const before = new Date(datesBetweenDto.before);
+    const after = new Date(datesBetweenDto.after);
+    const meetings = await this.meetingsRepository.find({
+      ...paginatorDto,
+      order: { date: 'ASC' },
+      where: { date: Between(before, after) },
+    });
+    const actived = await this.meetingsRepository.count({
+      where: { isActive: true },
+    });
+    const deactived = await this.meetingsRepository.count({
+      where: { isActive: false },
+    });
+    const total = await this.meetingsRepository.count();
+    return { ok: true, meetings, actived, deactived, total };
+  }
+
+  async findAllTree(paginatorDto: PaginatorDto) {
+    const meetings = await this.meetingsRepository.find({
+      ...paginatorDto,
+      order: { date: 'ASC' },
+      join: {
+        alias: 'meeting',
+        leftJoinAndSelect: {
+          contract: 'meeting.contract',
+          client: 'contract.client',
+        },
+      },
+    });
+    const actived = await this.meetingsRepository.count({
+      where: { isActive: true },
+    });
+    const deactived = await this.meetingsRepository.count({
+      where: { isActive: false },
+    });
+    const total = await this.meetingsRepository.count();
+    return { ok: true, meetings, actived, deactived, total };
+  }
+
+  async findAllTreeBetweenDates(
+    paginatorDto: PaginatorDto,
+    datesBetweenDto: DatesBetweenDto,
+  ) {
+    const before = new Date(datesBetweenDto.before);
+    const after = new Date(datesBetweenDto.after);
+    const meetings = await this.meetingsRepository.find({
+      ...paginatorDto,
+      order: { date: 'ASC' },
+      join: {
+        alias: 'meeting',
+        leftJoinAndSelect: {
+          contract: 'meeting.contract',
+          client: 'contract.client',
+        },
+      },
+      where: { date: Between(before, after) },
+    });
+    const actived = await this.meetingsRepository.count({
+      where: { isActive: true },
+    });
+    const deactived = await this.meetingsRepository.count({
+      where: { isActive: false },
+    });
+    const total = await this.meetingsRepository.count();
+    return { ok: true, meetings, actived, deactived, total };
+  }
+
+  async findAllByContractId(paginatorDto: PaginatorDto, contractId: number) {
+    const meetings = await this.meetingsRepository.find({
+      ...paginatorDto,
+      order: { date: 'ASC' },
+      where: { contract: { id: contractId } },
+    });
+    const actived = await this.meetingsRepository.count({
+      where: { isActive: true },
+    });
+    const deactived = await this.meetingsRepository.count({
+      where: { isActive: false },
+    });
+    const total = await this.meetingsRepository.count();
+    return { ok: true, meetings, actived, deactived, total };
+  }
+
+  async findAllByClientId(paginatorDto: PaginatorDto, clientId: number) {
+    const meetings = await this.meetingsRepository
+      .createQueryBuilder('meeting')
+      .innerJoinAndSelect('meeting.contract', 'contract')
+      .innerJoinAndSelect('contract.client', 'client')
+      .andWhere('contract.client = :id', { id: clientId })
+      .andWhere('meeting.contract = :isActive', { isActive: true })
+      .skip(paginatorDto.skip)
+      .take(paginatorDto.take)
+      .getMany();
+    const actived = await this.meetingsRepository.count({
+      where: { isActive: true },
+    });
+    const deactived = await this.meetingsRepository.count({
+      where: { isActive: false },
+    });
+    const total = await this.meetingsRepository.count();
+    return { ok: true, meetings, actived, deactived, total };
+  }
+
+  async findAllByClientIdBetweenDates(
+    paginatorDto: PaginatorDto,
+    clientId: number,
+    datesBetweenDto?: DatesBetweenDto,
+  ) {
+    const before = new Date(datesBetweenDto.before);
+    const after = new Date(datesBetweenDto.after);
+    const meetings = await this.meetingsRepository
+      .createQueryBuilder('meeting')
+      .leftJoinAndSelect('meeting.contract', 'contract')
+      .leftJoinAndSelect('contract.client', 'client')
+      .andWhere('contract.client = :id', { id: clientId })
+      .andWhere('meeting.date >= :before', { before })
+      .andWhere('meeting.date < :after', { after })
+      .skip(paginatorDto.skip)
+      .take(paginatorDto.take)
+      .getMany();
     const actived = await this.meetingsRepository.count({
       where: { isActive: true },
     });
@@ -60,6 +196,24 @@ export class MeetingsService {
 
   async findOne(id: number) {
     const meeting = await this.meetingsRepository.findOne(id);
+    if (!meeting) {
+      throw new BadRequestException(
+        `No se encontró ninguna cita con el identificador ${id}`,
+      );
+    }
+    return { ok: true, meeting };
+  }
+
+  async findOneTree(id: number) {
+    const meeting = await this.meetingsRepository.findOne(id, {
+      join: {
+        alias: 'meeting',
+        leftJoinAndSelect: {
+          contract: 'meeting.contract',
+          client: 'contract.client',
+        },
+      },
+    });
     if (!meeting) {
       throw new BadRequestException(
         `No se encontró ninguna cita con el identificador ${id}`,
@@ -88,7 +242,7 @@ export class MeetingsService {
     );
     if (!contract.isActive) {
       throw new BadRequestException(
-        `Para realizar la cita necesita un contrato activo`,
+        `Para actualizar la cita necesita un contrato activo`,
       );
     }
     const examsAvailable = contract.exams - contract.examsDone;
@@ -98,14 +252,29 @@ export class MeetingsService {
       );
     }
 
-    const updateResult = await this.meetingsRepository.update(
-      id,
-      updateMeetingDto,
-    );
+    const { contractId, ...dataToUpdate } = updateMeetingDto;
+
+    const updateResult = await this.meetingsRepository.update(id, dataToUpdate);
     return { ok: updateResult.affected > 0 ? true : false };
   }
 
-  async confirm(id: number, examsDone: number) {
+  async confirm(id: number, date: Date) {
+    if (!date) {
+      throw new BadRequestException(`La fecha de la cita es requerida`);
+    }
+    let meeting = await this.meetingsRepository.findOne(id);
+    if (!meeting) {
+      throw new BadRequestException(
+        `No se encontró ninguna cita con el identificador ${id}`,
+      );
+    }
+    meeting.date = new Date(date);
+    meeting.confirmed = true;
+    meeting = await this.meetingsRepository.save(meeting);
+    return { ok: true, meeting };
+  }
+
+  async finalize(id: number, examsDone: number) {
     let meeting = await this.meetingsRepository.findOne(id);
     if (!meeting) {
       throw new BadRequestException(
@@ -113,6 +282,7 @@ export class MeetingsService {
       );
     }
     meeting.examsDone = examsDone;
+    meeting.isActive = false;
     meeting = await this.meetingsRepository.save(meeting);
     return { ok: true, meeting };
   }

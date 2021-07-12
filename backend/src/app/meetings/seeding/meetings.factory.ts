@@ -1,13 +1,13 @@
 import * as Faker from 'faker';
-import { define, factory,  } from 'typeorm-seeding';
-import { Contract } from '../../contracts/entities/contract.entity';
+import { define } from 'typeorm-seeding';
 import { Meeting } from '../entities/meeting.entity';
 
 define(Meeting, (faker: typeof Faker) => {
   const meeting = new Meeting();
-  meeting.date = faker.date.between(new Date(), new Date('2025-01-01'));
+  meeting.date = faker.date.between(new Date(), new Date(2025, 12));
+  meeting.date.setUTCHours(0, 0, 0, 0);
+  console.log(meeting.date);
   meeting.examsRequired = Math.floor(Math.random() * 20);
   meeting.examsDone = 0;
-  // meeting.contract = factory(Contract)() as any;
   return meeting;
 });

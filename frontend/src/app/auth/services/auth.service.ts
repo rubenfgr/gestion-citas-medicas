@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from './../../../environments/environment';
-import { IUser } from './../../users/interfaces/users.interfaces';
+import { IUser } from '../../users/interfaces/users-res.interfaces';
 import { Role } from './../../users/users-roles-enum';
 import { ILogin } from './../interfaces/auth.interfaces';
 
@@ -15,9 +15,9 @@ export class AuthService {
   private _user: IUser | null = {
     username: 'Rubén Francisco',
     email: 'rubenfgr87@outlook.com',
-    id: 1,
+    id: 4,
     isActive: true,
-    role: Role.ADMIN,
+    role: Role.CLIENT,
   };
 
   get user(): IUser | null {

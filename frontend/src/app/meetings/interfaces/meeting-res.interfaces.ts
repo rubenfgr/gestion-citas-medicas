@@ -1,4 +1,4 @@
-import { IContract } from '../../contracts/interfaces/contract.interfaces';
+import { IContract } from '../../contracts/interfaces/contracts-res.interfaces';
 
 export interface IMeetingCreateResponse {
   ok: boolean;
@@ -9,8 +9,8 @@ export interface IMeetingGetByIdResponse extends IMeetingCreateResponse {}
 
 export interface IMeeting {
   contract: IContract;
-  date: string;
-  examsRequired: string;
+  date: Date;
+  examsRequired: number;
   id: number;
   examsDone: number;
   confirmed: boolean;

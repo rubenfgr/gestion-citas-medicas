@@ -32,6 +32,11 @@ export class ClientsController {
     return this.clientsService.findOne(+id);
   }
 
+  @Get('user/:userId')
+  findOneByUserId(@Param('userId', ParseIntPipe) userId: number) {
+    return this.clientsService.findOneByUserId(+userId);
+  }
+
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Faker from 'faker';
-import { define, factory } from 'typeorm-seeding';
+import { define } from 'typeorm-seeding';
 import { Client } from '../entities/client.entity';
-import { User } from './../../users/entities/user.entity';
 
 const getRandomCIF = () => {
   const firstLetter = 'ABCDEFGHJKLMNPQRSUVW'[Math.floor(Math.random() * 20)];
@@ -20,6 +19,5 @@ define(Client, (faker: typeof Faker) => {
   client.city = faker.address.city();
   client.province = faker.address.state();
   client.name = faker.company.companyName() + Math.random() * 99999;
-  // client.user = factory(User)() as any;
   return client;
 });

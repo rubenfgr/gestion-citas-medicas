@@ -1,28 +1,13 @@
-import { IClient } from '../../clients/interfaces/client.interfaces';
-
-export interface IContractCreateResponse {
-  ok: boolean;
-  contract: IContract;
+export interface CreateContractDto {
+  clientId: number;
+  dateStart: Date;
+  dateEnd: Date;
+  exams: number;
 }
 
-export interface IContract {
-  dateStart: string;
-  dateEnd: string;
-  clientId: string;
-  exams: string;
-  client: IClient;
-  isActive: boolean;
-  id: number;
+export interface UpdateContractDto {
+  dateStart: Date;
+  dateEnd: Date;
+  exams: Date;
   examsDone: number;
 }
-
-export interface IContractGetAllResponse {
-  ok: boolean;
-  contracts: IContract[];
-  total?: number;
-}
-
-export interface IContractGetByClientIdResponse
-  extends IContractGetAllResponse {}
-
-export interface IContractGetByIdResponse extends IContractCreateResponse {}

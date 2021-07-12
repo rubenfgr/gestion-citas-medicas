@@ -55,7 +55,7 @@ export class ContractsController {
   @Patch('activate/:id')
   removeOrActivate(
     @Param('id', ParseIntPipe) id: string,
-    @Query('isActive', ParseBoolPipe) isActive: boolean,
+    @Body('isActive', ParseBoolPipe) isActive: boolean,
   ) {
     return this.contractsService.removeOrActivate(+id, isActive);
   }

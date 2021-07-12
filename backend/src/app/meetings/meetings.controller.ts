@@ -1,3 +1,4 @@
+import { DatesBetweenDto } from './../shared/dto/dates-between.dto';
 import { PaginatorDto } from './../shared/dto/paginator.dto';
 import {
   Body,
@@ -24,19 +25,74 @@ export class MeetingsController {
   }
 
   @Get()
-  findAll(
+  findAll(@Query() paginatorDto: PaginatorDto) {
+    return this.meetingsService.findAll(paginatorDto);
+  }
+
+  @Get('/dates')
+  findAllBetweenDates(
     @Query() paginatorDto: PaginatorDto,
-    @Query('isActive') isActive: any,
+    @Query() datesBetweenDto: DatesBetweenDto,
   ) {
-    isActive === 'true' || isActive === undefined
-      ? (isActive = true)
-      : (isActive = false);
-    return this.meetingsService.findAll(paginatorDto, isActive);
+    return this.meetingsService.findAllBetweenDates(
+      paginatorDto,
+      datesBetweenDto,
+    );
+  }
+
+  @Get('all/tree')
+  findAllTree(@Query() paginatorDto: PaginatorDto) {
+    return this.meetingsService.findAllTree(paginatorDto);
+  }
+
+  @Get('all/tree/dates')
+  findAllTreeBetweenDates(
+    @Query() paginatorDto: PaginatorDto,
+    @Query() datesBetweenDto: DatesBetweenDto,
+  ) {
+    return this.meetingsService.findAllTreeBetweenDates(
+      paginatorDto,
+      datesBetweenDto,
+    );
+  }
+
+  @Get('all/contract/:contractId')
+  findAllByContractId(
+    @Query() paginatorDto: PaginatorDto,
+    @Param('contractId', ParseIntPipe) contractId: number,
+  ) {
+    return this.meetingsService.findAllByContractId(paginatorDto, contractId);
+  }
+
+  @Get('all/client/:clientId')
+  findAllByClientId(
+    @Query() paginatorDto: PaginatorDto,
+    @Param('clientId', ParseIntPipe) clientId: number,
+  ) {
+    return this.meetingsService.findAllByClientId(paginatorDto, clientId);
+  }
+
+  @Get('all/client/dates/:clientId')
+  findAllByClientIdBetweenDates(
+    @Query() paginatorDto: PaginatorDto,
+    @Param('clientId', ParseIntPipe) clientId: number,
+    @Query() datesBetweenDto: DatesBetweenDto,
+  ) {
+    return this.meetingsService.findAllByClientIdBetweenDates(
+      paginatorDto,
+      clientId,
+      datesBetweenDto,
+    );
   }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.meetingsService.findOne(+id);
+  }
+
+  @Get('one/tree/:id')
+  findOneTree(@Param('id', ParseIntPipe) id: number) {
+    return this.meetingsService.findOneTree(+id);
   }
 
   @Patch(':id')
@@ -50,15 +106,23 @@ export class MeetingsController {
   @Patch('confirm/:id')
   confirm(
     @Param('id', ParseIntPipe) id: number,
-    @Query('examsDone', ParseIntPipe) examsDone: number,
+    @Body() updateMeetingDto: UpdateMeetingDto,
   ) {
-    this.meetingsService.confirm(id, examsDone);
+    return this.meetingsService.confirm(id, updateMeetingDto.date);
+  }
+
+  @Patch('finalize/:id')
+  finalize(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('examsDone', ParseIntPipe) examsDone: number,
+  ) {
+    return this.meetingsService.finalize(id, examsDone);
   }
 
   @Patch('activate/:id')
   removeOrActive(
     @Param('id', ParseIntPipe) id: number,
-    @Query('isActive', ParseBoolPipe) isActive: boolean,
+    @Body('isActive', ParseBoolPipe) isActive: boolean,
   ) {
     return this.meetingsService.removeOrActive(+id, isActive);
   }

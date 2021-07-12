@@ -1,7 +1,7 @@
-import { IsBoolean, IsDateString, IsNumberString, IsOptional } from 'class-validator';
+import { IsDateString, IsNumber, IsNumberString } from 'class-validator';
 
 export class CreateContractDto {
-  @IsNumberString()
+  @IsNumber()
   clientId: number;
 
   @IsDateString()
@@ -10,10 +10,6 @@ export class CreateContractDto {
   @IsDateString()
   dateEnd: Date;
 
-  @IsNumberString()
+  @IsNumber()
   exams: number;
-
-  @IsBoolean()
-  @IsOptional()
-  isActive: boolean;
 }

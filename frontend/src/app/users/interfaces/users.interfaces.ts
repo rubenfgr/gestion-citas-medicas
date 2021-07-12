@@ -1,22 +1,12 @@
-export interface IUserCreateResponse {
-  ok: boolean;
-  user: IUser;
-}
+import { Role } from './../users-roles-enum';
 
-export interface IUserGetByIdResponse extends IUserCreateResponse {}
-
-export interface IUser {
+export interface CreateUserDto {
   username: string;
   email: string;
-  role: string;
-  id: number;
-  isActive: boolean;
+  password: string;
 }
 
-export interface IUsersGetAllResponse {
-  ok: boolean;
-  users: IUser[];
-  total: number;
-  actived: number;
-  deactived: number;
+export interface UpdateUserDto {
+  username?: string;
+  email?: string;
 }

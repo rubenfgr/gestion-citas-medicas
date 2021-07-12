@@ -15,10 +15,7 @@ export class ClientsService {
   ) {}
 
   async create(createClientDto: CreateClientDto) {
-    const userExists = await this.clientsRepository.find({
-      where: { user: { id: createClientDto.userId } },
-    });
-    const test = await this.clientsRepository
+    const userExists = await this.clientsRepository
       .createQueryBuilder('client')
       .leftJoinAndSelect('client.user', 'user')
       .where('client.user = :id', { id: createClientDto.userId })
@@ -50,16 +47,34 @@ export class ClientsService {
   }
 
   async findAll(paginatorDto) {
-    const clients = await this.clientsRepository.find(paginatorDto);
+    const clients = await this.clientsRepository.find({
+      ...paginatorDto,
+      join: { alias: 'client', leftJoinAndSelect: { user: 'client.user' } },
+    });
     const total = await this.clientsRepository.count();
     return { ok: true, clients, total };
   }
 
   async findOne(id: number) {
-    const client = await this.clientsRepository.findOne(id);
+    const client = await this.clientsRepository.findOne(id, {
+      join: { alias: 'client', leftJoinAndSelect: { user: 'client.user' } },
+    });
     if (!client) {
       throw new BadRequestException(
         `No existe ningún cliente con el identificador ${id}`,
+      );
+    }
+    return { ok: true, client };
+  }
+
+  async findOneByUserId(userId: number) {
+    const client = await this.clientsRepository.findOne({
+      where: { user: { id: userId } },
+      join: { alias: 'client', leftJoinAndSelect: { user: 'client.user' } },
+    });
+    if (!client) {
+      throw new BadRequestException(
+        `No existe ningún cliente para el usuario con identificador ${userId}`,
       );
     }
     return { ok: true, client };

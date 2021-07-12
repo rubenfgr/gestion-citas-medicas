@@ -18,14 +18,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  findAll(
-    @Query() paginatorDto: PaginatorDto,
-    @Query('isActive') isActive: any,
-  ) {
-    isActive === 'true' || isActive === undefined || null
-      ? (isActive = true)
-      : (isActive = false);
-    return this.usersService.findAll(paginatorDto, isActive);
+  findAll(@Query() paginatorDto: PaginatorDto) {
+    return this.usersService.findAll(paginatorDto);
   }
 
   @Get(':id')
@@ -41,10 +35,15 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @Patch('change-role/:id')
+  changeRole(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto) {
+    return this.usersService.changeRole(id, updateUserDto);
+  }
+
   @Patch('activate/:id')
   removeOrActivate(
     @Param('id', ParseIntPipe) id: number,
-    @Query('isActive', ParseBoolPipe) isActive: boolean,
+    @Body('isActive', ParseBoolPipe) isActive: boolean,
   ) {
     return this.usersService.removeOrActivate(id, isActive);
   }
