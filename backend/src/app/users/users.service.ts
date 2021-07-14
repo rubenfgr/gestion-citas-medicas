@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -32,7 +33,6 @@ export class UsersService {
     user.username = createUserDto.username;
     user.email = createUserDto.email;
     user.password = createUserDto.password;
-    user.role = Role.CLIENT;
     user = await this.usersRepository.save(user);
     const plainUser = classToClass(user);
     return { ok: true, user: plainUser };
@@ -83,6 +83,22 @@ export class UsersService {
     }
     const { role, ...rest } = updateUserDto;
     const updateResult = await this.usersRepository.update({ id }, rest);
+    return { ok: updateResult.affected > 0 ? true : false };
+  }
+
+  async changePass(id: number, password: string) {
+    const user = await this.usersRepository.findOne(id);
+    if (!user) {
+      throw new BadRequestException(
+        `No existe ningún usuario con el identificador ${id}`,
+      );
+    }
+    const salt = bcrypt.genSaltSync();
+    password = bcrypt.hashSync(password, salt);
+    const updateResult = await this.usersRepository.update(
+      { id },
+      { password },
+    );
     return { ok: updateResult.affected > 0 ? true : false };
   }
 

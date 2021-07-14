@@ -1,25 +1,33 @@
-import { NavigationComponent } from './shared/pages/navigation/navigation.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app.component';
+import { AuthGuard } from './auth/guards/auth.guard';
 import { ErrorComponent } from './shared/pages/error/error.component';
 
 const routes: Routes = [
   {
     path: '',
+    component: AppComponent,
     children: [
       {
-        path: '',
+        path: 'nav',
         loadChildren: () =>
           import('./shared/shared.module').then((m) => m.SharedModule),
+        canActivate: [AuthGuard],
+        canLoad: [AuthGuard],
       },
-
+      {
+        path: 'auth',
+        loadChildren: () =>
+          import('./auth/auth.module').then((m) => m.AuthModule),
+      },
       {
         path: '404',
         component: ErrorComponent,
       },
       {
         path: '**',
-        redirectTo: '404',
+        redirectTo: 'nav',
       },
     ],
   },

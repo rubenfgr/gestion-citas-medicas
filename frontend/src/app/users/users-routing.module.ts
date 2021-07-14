@@ -1,3 +1,4 @@
+import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
 import { UsersListComponent } from './pages/users-list/users-list.component';
 import { UsersHomeComponent } from './pages/users-home/users-home.component';
 import { NgModule } from '@angular/core';
@@ -11,6 +12,10 @@ const routes: Routes = [
       {
         path: 'list',
         component: UsersListComponent,
+      },
+      {
+        path: 'profile',
+        component: UsersProfileComponent,
       },
       {
         path: '**',

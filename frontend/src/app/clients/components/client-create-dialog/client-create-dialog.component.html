@@ -1,0 +1,123 @@
+<h1>{{ title }}</h1>
+<hr />
+<form
+  class="d-flex flex-wrap gap-2 justify-content-center"
+  (ngSubmit)="save()"
+  [formGroup]="clientForm"
+>
+  <div class="flex-grow-1">
+    <div class="w-100 d-flex flex-wrap gap-2">
+      <!-- username -->
+      <div class="flex-grow-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Usuario</mat-label>
+          <input
+            (input)="search()"
+            (ngModelChange)="search()"
+            matInput
+            type="text"
+            autocomplete="off"
+            formControlName="username"
+          />
+          <mat-error
+            *ngIf="isValidField('username')"
+            class="form-text text-danger"
+            >El usuario es obligatorio</mat-error
+          >
+        </mat-form-field>
+
+        <mat-selection-list
+          *ngIf="showSuggestion"
+          [multiple]="false"
+          (click)="(showSuggestion)"
+          class="position-absolute bg-light suggestion"
+        >
+          <mat-list-option
+            *ngFor="let user of suggestedUsers"
+            (click)="selectSuggestedUser(user.username)"
+            (keyup.enter)="selectSuggestedUser(user.username)"
+            [value]="user.username"
+            >{{ user.username }}</mat-list-option
+          >
+        </mat-selection-list>
+      </div>
+
+      <div class="flex-grow-1">
+        <!-- name -->
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Razón social</mat-label>
+          <input matInput type="text" formControlName="name" />
+          <mat-error *ngIf="isValidField('name')" class="form-text text-danger"
+            >La razón social es obligatoria</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <div class="flex-grow-1">
+        <!-- cif -->
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>CIF</mat-label>
+          <input matInput type="text" formControlName="cif" />
+          <mat-error *ngIf="isValidField('cif')" class="form-text text-danger"
+            >El CIF es obligatorio</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="flex-grow-1">
+        <!-- city -->
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Localidad</mat-label>
+          <input matInput type="text" formControlName="city" />
+          <mat-error *ngIf="isValidField('city')" class="form-text text-danger"
+            >La localidad es obligatoria</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <div class="flex-grow-1">
+        <!-- province -->
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Provincia</mat-label>
+          <input matInput type="text" formControlName="province" />
+          <mat-error
+            *ngIf="isValidField('province')"
+            class="form-text text-danger"
+            >La provincia es obligatoria</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- address -->
+    <mat-form-field appearance="fill" class="row w-100">
+      <mat-label>Dirección</mat-label>
+      <input matInput type="text" formControlName="address" />
+      <mat-error *ngIf="isValidField('address')" class="form-text text-danger"
+        >El dirección es obligatoria</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div class="flex-grow-1 overflow-scroll">
+    Formulario: {{ clientForm.valid }}
+    <pre class="bg-dark text-white p-3 rounded">
+      {{ clientForm.value | json }}
+    </pre>
+  </div>
+
+  <div class="d-flex justify-content-end w-100">
+    <button mat-button color="warn" mat-dialog-close>Cerrar</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="clientForm.invalid"
+    >
+      Guardar
+    </button>
+  </div>
+</form>

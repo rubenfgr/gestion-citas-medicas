@@ -1,1 +1,73 @@
-<p>contracts-list works!</p>
+<div class="d-flex flex-wrap">
+  <mat-form-field class="flex-grow-1">
+    <mat-label>Filtrar</mat-label>
+    <input [(ngModel)]="term" (keyup)="filter()" matInput type="text" />
+  </mat-form-field>
+
+  <div class="ps-2 pe-2">
+    <button mat-raised-button color="primary" (click)="openContractCreateDialog()">Añadir contrato</button>
+  </div>
+</div>
+
+<div class="row justify-content-evenly">
+  <div
+    *ngFor="let contract of contracts"
+    class="p-3 col-sm-12 col-lg-6 col-xl-4"
+  >
+
+    <mat-card>
+      <mat-card-header>
+        <div
+          mat-card-avatar
+          [class]="contract.isActive ? 'text-success' : 'text-danger'"
+        >
+          <mat-icon *ngIf="contract.isActive">done_outline</mat-icon>
+          <mat-icon *ngIf="!contract.isActive">clear</mat-icon>
+        </div>
+        <mat-card-title>{{ contract.client?.name }}</mat-card-title>
+        <mat-card-subtitle>{{ contract.client?.address }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>
+          Fecha de inicio: <span>{{ contract.dateStart }}</span>
+        </p>
+        <p>
+          Fecha de finalización: <span>{{ contract.dateEnd }}</span>
+        </p>
+        <p>
+          Reconocimientos contratados: <span>{{ contract.exams }}</span>
+        </p>
+        <p>
+          Reconocimientos realizados: <span>{{ contract.examsDone }}</span>
+        </p>
+      </mat-card-content>
+      <mat-card-actions class="d-flex justify-content-between">
+        <div>
+          <button
+            [disabled]="contract.isActive"
+            mat-button
+            (click)="activate(contract)"
+          >
+            Activar
+          </button>
+          <button
+            [disabled]="!contract.isActive"
+            mat-button
+            (click)="deactivate(contract)"
+          >
+            Desactivar
+          </button>
+        </div>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="openContractCreateDialog(contract)"
+        >
+          Editar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

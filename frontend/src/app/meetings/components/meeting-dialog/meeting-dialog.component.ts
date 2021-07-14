@@ -24,11 +24,11 @@ export class MeetingDialogComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.meetingsService.findOneTree(this.data.id!).subscribe((res) => {
-      this.meeting = res.meeting;
-      this.meeting.date = new Date(this.meeting.date!);
+      this.meeting = { ...res.meeting };
+      this.meeting.date = new Date(res.meeting.date);
 
-      let hours = Math.abs(this.meeting.date.getHours());
-      hours = hours === 0 ? hours : hours - 2;
+      let hours = Math.abs(this.meeting.date.getHours()) - 2;
+      // hours = hours === 0 ? hours : hours - 2;
       const min = this.meeting.date.getMinutes();
       this.time = `${hours < 9 ? '0' + hours : hours}:${
         min < 9 ? '0' + min : min
@@ -44,10 +44,7 @@ export class MeetingDialogComponent implements AfterViewInit {
   save() {
     let [hours, min] = this.time.split(':');
     const date = new Date(this.meeting.date);
-    date.setHours(
-      Number.parseInt(hours, 10) + 2, // To Central EU Time
-      Number.parseInt(min, 10)
-    );
+    date.setUTCHours(Number.parseInt(hours, 10), Number.parseInt(min, 10));
     this.meetingsService.confirm(this.meeting.id, date).subscribe((res) => {
       this.meeting.date = res.meeting.date;
       this.meeting.confirmed = res.meeting.confirmed;

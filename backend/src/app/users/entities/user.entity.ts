@@ -18,7 +18,7 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.CLIENT })
+  @Column({ type: 'enum', enum: Role, default: Role.NONE })
   role: Role;
 
   @BeforeInsert()

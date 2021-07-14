@@ -1,1 +1,40 @@
-<p>users-list works!</p>
+<h1>Usuarios</h1>
+<hr>
+
+<mat-form-field class="w-100">
+  <mat-label>Filtrar</mat-label>
+  <input [(ngModel)]="term" (keyup)="filter()" matInput type="text" />
+</mat-form-field>
+
+<div class="row">
+  <div
+    *ngFor="let user of users"
+    class="col-sm-12 col-md-6 col-lg-4 animate__animated animate__fadeIn"
+  >
+    <div class="d-flex gap-2">
+      <button
+        (click)="activateOrDeactivate(user)"
+        mat-raised-button
+        [color]="user.isActive ? 'warn' : 'primary'"
+        class="mb-1 flex-grow-1"
+      >
+        {{ user.isActive ? "Baja" : "Alta" }}
+      </button>
+
+      <button
+        (click)="changeRole(user)"
+        mat-raised-button
+        color="basic"
+        class="mb-1 flex-grow-1"
+      >
+        Rol
+      </button>
+    </div>
+
+    <pre
+      [ngClass]="user.isActive ? 'bg-dark' : 'bg-danger'"
+      class="text-white p-3 rounded"
+      >{{ user | json }}</pre
+    >
+  </div>
+</div>

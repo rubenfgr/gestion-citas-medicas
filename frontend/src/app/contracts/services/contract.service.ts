@@ -4,12 +4,15 @@ import { Observable } from 'rxjs';
 import { PaginatorDto } from '../../shared/interfaces/paginator.interface';
 import { environment } from './../../../environments/environment';
 import { UpdateClientDto } from './../../clients/interfaces/client.interfaces';
-import { CreateContractDto } from './../interfaces/contract.interfaces';
+import {
+  CreateContractDto,
+  UpdateContractDto,
+} from './../interfaces/contract.interfaces';
 import {
   IContractCreateResponse,
   IContractGetAllResponse,
   IContractGetByClientIdResponse,
-  IContractGetByIdResponse
+  IContractGetByIdResponse,
 } from './../interfaces/contracts-res.interfaces';
 
 @Injectable({
@@ -47,11 +50,13 @@ export class ContractService {
     );
   }
 
-  update(id: number, updateClientDto: UpdateClientDto): Observable<boolean> {
+  update(id: number, updateClientDto: UpdateContractDto): Observable<boolean> {
     return this.http.patch<boolean>(this._baseUrl + `/${id}`, updateClientDto);
   }
 
   removeOrActive(id: number, isActive: boolean): Observable<boolean> {
-    return this.http.patch<boolean>(this._baseUrl + `/${id}`, { isActive });
+    return this.http.patch<boolean>(this._baseUrl + `/activate/${id}`, {
+      isActive,
+    });
   }
 }

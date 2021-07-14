@@ -6,10 +6,10 @@ export interface IContractCreateResponse {
 }
 
 export interface IContract {
-  dateStart: string;
-  dateEnd: string;
+  dateStart: Date;
+  dateEnd: Date;
   clientId: string;
-  exams: string;
+  exams: number;
   client: IClient;
   isActive: boolean;
   id: number;

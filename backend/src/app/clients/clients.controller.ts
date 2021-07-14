@@ -1,4 +1,4 @@
-import { PaginatorDto } from './../shared/dto/paginator.dto';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Body,
   Controller,
@@ -8,7 +8,10 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
+import { PaginatorDto } from './../shared/dto/paginator.dto';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -43,5 +46,21 @@ export class ClientsController {
     @Body() updateClientDto: UpdateClientDto,
   ) {
     return this.clientsService.update(+id, updateClientDto);
+  }
+
+  @Get('excel/:term')
+  async toExcel(@Param('term') term: string | undefined, @Res() res: Response) {
+    /* res.writeHead(200, [
+      [
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ],
+    ]); */
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    const stream = await this.clientsService.toExcel(term);
+    stream.pipe(res);
   }
 }

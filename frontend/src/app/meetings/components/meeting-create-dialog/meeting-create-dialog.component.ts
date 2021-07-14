@@ -1,14 +1,14 @@
-import { SwalIconType } from './../../../shared/enums/swal.enums';
-import { SweetAlertService } from './../../../shared/services/sweet-alert.service';
-import { CreateMeetingDto } from './../../interfaces/meeting.interfaces';
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterContentInit, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from './../../../auth/services/auth.service';
 import { ClientService } from './../../../clients/services/client.service';
 import { ContractService } from './../../../contracts/services/contract.service';
+import { SwalIconType } from './../../../shared/enums/swal.enums';
+import { SweetAlertService } from './../../../shared/services/sweet-alert.service';
 import { IMeeting } from './../../interfaces/meeting-res.interfaces';
+import { CreateMeetingDto } from './../../interfaces/meeting.interfaces';
 import { MeetingsService } from './../../services/meetings.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { MeetingsService } from './../../services/meetings.service';
   templateUrl: './meeting-create-dialog.component.html',
   styles: [],
 })
-export class MeetingCreateDialogComponent implements OnInit {
+export class MeetingCreateDialogComponent implements OnInit, AfterContentInit {
   meeting!: IMeeting;
   title = '';
 
@@ -45,6 +45,8 @@ export class MeetingCreateDialogComponent implements OnInit {
     }
   }
 
+  ngAfterContentInit(): void {}
+
   update() {
     this.title = 'Actualizar cita';
     if (this.data.id) {
@@ -54,6 +56,10 @@ export class MeetingCreateDialogComponent implements OnInit {
           date: this.meeting.date,
           examsRequired: this.meeting.examsRequired,
         });
+        if (this.meeting.examsDone > 0) {
+          this.myForm.get('examsRequired')?.disable();
+          this.myForm.get('date')?.disable();
+        }
       });
     }
   }
@@ -93,7 +99,7 @@ export class MeetingCreateDialogComponent implements OnInit {
 
   save() {
     const createMeetingDto: CreateMeetingDto = {
-      contractId: this.meeting.contract?.id,
+      contractId: this.meeting.contract.id,
       date: this.myForm.controls.date.value,
       examsRequired: this.myForm.controls.examsRequired.value,
     };

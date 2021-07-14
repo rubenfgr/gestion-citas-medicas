@@ -1,7 +1,7 @@
-import { IsNumberString, IsNotEmpty, Matches } from 'class-validator';
+import { IsNotEmpty, IsNumber, Matches } from 'class-validator';
 
 export class CreateClientDto {
-  @IsNumberString()
+  @IsNumber()
   userId: number;
 
   @Matches(/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/, {

@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import {
   CreateClientDto,
   UpdateClientDto,
@@ -42,5 +43,23 @@ export class ClientService {
 
   update(id: number, updateClientDto: UpdateClientDto): Observable<boolean> {
     return this.http.patch<boolean>(this._baseUrl + `/${id}`, updateClientDto);
+  }
+
+  toExcel(term: string): Observable<any> {
+    return this.http
+      .get<any>(this._baseUrl + `/excel/${term}`, {
+        responseType: 'blob' as 'json',
+      })
+      .pipe(
+        map((res) => {
+          console.log(res);
+          const binaryData = [];
+          binaryData.push(res);
+          const url = window.URL.createObjectURL(
+            new Blob(binaryData, { type: res.type })
+          );
+          return url;
+        })
+      );
   }
 }

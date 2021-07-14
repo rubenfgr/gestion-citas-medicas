@@ -1,14 +1,17 @@
 <h1>{{ title }}</h1>
 <hr />
-
+<div *ngIf="meeting?.confirmed">
+  <h3><span class="text-success">Confirmada:</span> {{ meeting?.date | date: "dd/MM/yy hh:mm:ss" }}</h3>
+  <h3><span class="text-success">Reconocimientos realizados:</span> {{ meeting?.examsDone }}</h3>
+</div>
 <form (ngSubmit)="save()" [formGroup]="myForm" class="d-flex flex-column">
+
   <mat-form-field appearance="fill">
     <mat-label>Reconocimientos</mat-label>
     <input
       matInput
       type="number"
       formControlName="examsRequired"
-      [disabled]="meeting && meeting.examsDone > 0"
     />
   </mat-form-field>
 
@@ -18,7 +21,7 @@
       matInput
       [matDatepicker]="picker"
       formControlName="date"
-      [disabled]="meeting && meeting.examsDone > 0"
+
     />
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>

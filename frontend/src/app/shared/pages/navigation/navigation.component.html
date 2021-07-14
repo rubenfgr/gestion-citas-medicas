@@ -9,9 +9,12 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar color="primary" class="d-flex h-auto p-2 flex-row flex-wrap justify-content-between">
+    <mat-toolbar
+      color="primary"
+      class="d-flex h-auto p-2 flex-row flex-wrap justify-content-between"
+    >
       <div class="d-flex align-items-center">
-        <button
+        <button [appRole]="[Role.ADMIN, Role.DOCTOR]"
           type="button"
           aria-label="Toggle sidenav"
           mat-icon-button
@@ -23,8 +26,12 @@
       </div>
 
       <div class="d-flex align-items-center justify-content-end flex-grow-1">
-        <span class="text-username">{{ user?.username }}</span>
-        <button mat-button>
+        <a
+          [routerLink]="['users/profile', user]"
+          class="text-username"
+          >{{ user?.username }}</a
+        >
+        <button mat-button (click)="logout()">
           <mat-icon class="text-logout">logout</mat-icon>
         </button>
       </div>

@@ -1,1 +1,87 @@
-<p>clients-list works!</p>
+<mat-toolbar class="d-flex justify-content-between">
+  <span>Clientes</span>
+
+  <div>
+    <button
+      (click)="openDialogCreateClient()"
+      mat-raised-button
+      color="primary"
+    >
+      Añadir cliente
+    </button>
+  </div>
+</mat-toolbar>
+
+<div class="d-flex w-100">
+  <mat-form-field appearance="standard" class="flex-grow-1">
+    <mat-label>Filter</mat-label>
+    <input
+      matInput
+      [(ngModel)]="term"
+      (keyup)="applyFilter($event)"
+      placeholder="Ex. Mia"
+      #input
+    />
+  </mat-form-field>
+  <div class="d-flex justify-content-center align-items-center p-3">
+    <img (click)="toExcel()" class="img-thumbnail" src="assets/img/excel.png" />
+  </div>
+</div>
+
+<div class="mat-elevation-z8">
+  <table
+    mat-table
+    [dataSource]="dataSource"
+    matSort
+    class="w-100"
+    matSortActive="name"
+    matSortDirection="asc"
+    matSortDisableClear
+  >
+    <!-- cif Column -->
+    <ng-container matColumnDef="cif">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>CIF</th>
+      <td mat-cell class="pe-3" *matCellDef="let row" class="pe-4">
+        {{ row.cif }}
+      </td>
+    </ng-container>
+
+    <!-- name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Razón social</th>
+      <td mat-cell class="pe-3" *matCellDef="let row">{{ row.name }}</td>
+    </ng-container>
+
+    <!-- address Column -->
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Dirección</th>
+      <td mat-cell class="pe-3" *matCellDef="let row">{{ row.address }}</td>
+    </ng-container>
+
+    <!-- city Column -->
+    <ng-container matColumnDef="city">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Localidad</th>
+      <td mat-cell class="pe-3" *matCellDef="let row">{{ row.city }}</td>
+    </ng-container>
+
+    <!-- province Column -->
+    <ng-container matColumnDef="province">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Provincia</th>
+      <td mat-cell class="pe-3" *matCellDef="let row">{{ row.province }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      (click)="openDialogCreateClient(row)"
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+    ></tr>
+
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">
+        No data matching the filter "{{ input.value }}"
+      </td>
+    </tr>
+  </table>
+</div>

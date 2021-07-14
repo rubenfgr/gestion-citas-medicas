@@ -25,7 +25,8 @@ export class ContractsService {
       where: { client: { id: createContractDto.clientId } },
     });
     for (let clientContract of clientContracts) {
-      if (clientContract.dateEnd.getTime() <= new Date().getTime()) {
+      const contractDateEnd = new Date(clientContract.dateEnd);
+      if (contractDateEnd.getTime() <= new Date().getTime()) {
         clientContract.isActive = false;
         clientContract = await this.contractsRepository.save(clientContract);
       }
@@ -38,7 +39,10 @@ export class ContractsService {
     const { client } = await this.clientsService.findOne(
       createContractDto.clientId,
     );
-    let contract = plainToClass(Contract, createContractDto);
+    let contract: Contract = new Contract();
+    contract.dateEnd = dateEnd;
+    contract.dateStart = dateStart;
+    contract.exams = createContractDto.exams;
     contract.client = client;
     contract.isActive = true;
     contract = await this.contractsRepository.save(contract);
@@ -48,6 +52,10 @@ export class ContractsService {
   async findAll(paginatorDto: PaginatorDto) {
     const contracts = await this.contractsRepository.find({
       ...paginatorDto,
+      join: {
+        alias: 'contract',
+        leftJoinAndSelect: { client: 'contract.client' },
+      },
     });
     const actived = await this.contractsRepository.count({
       where: { isActive: true },

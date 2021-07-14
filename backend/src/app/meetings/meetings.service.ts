@@ -223,18 +223,23 @@ export class MeetingsService {
   }
 
   async update(id: number, updateMeetingDto: UpdateMeetingDto) {
+    let date = new Date(updateMeetingDto.date);
+    date.setHours(date.getHours() - 2); // To UTC!
+    if (date.getTime() < Date.now()) {
+      throw new BadRequestException(`La fecha debe ser mayor al día actual`);
+    }
     const meeting = await this.meetingsRepository.findOne(id);
     if (!meeting) {
       throw new BadRequestException(
         `No se encontró ninguna cita con el identificador ${id}`,
       );
     }
-    if (!meeting.isActive) {
+    if (!meeting.isActive || meeting.examsDone > 0) {
       throw new BadRequestException(
         'La cita no se puede modificar una vez se han realizado algún reconocimiento o esta pasada de fecha',
       );
     }
-    const date = new Date(updateMeetingDto.date);
+    date = new Date(updateMeetingDto.date);
     await this.checkDate(date);
     date.setHours(0, 0, 0, 0);
     const { contract } = await this.contractService.findOne(
@@ -254,7 +259,10 @@ export class MeetingsService {
 
     const { contractId, ...dataToUpdate } = updateMeetingDto;
 
-    const updateResult = await this.meetingsRepository.update(id, dataToUpdate);
+    const updateResult = await this.meetingsRepository.update(id, {
+      ...dataToUpdate,
+      confirmed: false,
+    });
     return { ok: updateResult.affected > 0 ? true : false };
   }
 
@@ -275,7 +283,12 @@ export class MeetingsService {
   }
 
   async finalize(id: number, examsDone: number) {
-    let meeting = await this.meetingsRepository.findOne(id);
+    let meeting = await this.meetingsRepository.findOne(id, {
+      join: {
+        alias: 'meeting',
+        leftJoinAndSelect: { contract: 'meeting.contract' },
+      },
+    });
     if (!meeting) {
       throw new BadRequestException(
         `No se encontró ninguna cita con el identificador ${id}`,
@@ -284,6 +297,15 @@ export class MeetingsService {
     meeting.examsDone = examsDone;
     meeting.isActive = false;
     meeting = await this.meetingsRepository.save(meeting);
+    const meetingsByContract = await this.meetingsRepository.find({
+      where: { contract: { id: meeting.contract.id } },
+    });
+    if (meetingsByContract.length > 0) {
+      const examsDone = meetingsByContract
+        .map((m) => m.examsDone)
+        .reduce((a, c) => a + c);
+      await this.contractService.update(meeting.contract.id, { examsDone });
+    }
     return { ok: true, meeting };
   }
 

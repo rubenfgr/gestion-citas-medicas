@@ -60,13 +60,14 @@ export class MeetingsService {
     datesBetweenDto: DatesBetweenDto,
     paginatorDto?: PaginatorDto
   ): Observable<IMeetingGetAllResponse> {
+    const { after, before } = datesBetweenDto;
     return this.http.get<IMeetingGetAllResponse>(
       this._baseUrl + '/all/tree/dates',
       {
         params: {
           ...paginatorDto,
-          after: datesBetweenDto.after.toString(),
-          before: datesBetweenDto.before.toString(),
+          after: after.toISOString(),
+          before: before.toISOString(),
         },
       }
     );

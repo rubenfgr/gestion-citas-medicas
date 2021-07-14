@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
-import { Repository } from 'typeorm';
+import * as ExcelJS from 'exceljs';
+import { Readable } from 'stream';
+import { Like, Repository } from 'typeorm';
 import { UsersService } from './../users/users.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -15,12 +16,10 @@ export class ClientsService {
   ) {}
 
   async create(createClientDto: CreateClientDto) {
-    const userExists = await this.clientsRepository
-      .createQueryBuilder('client')
-      .leftJoinAndSelect('client.user', 'user')
-      .where('client.user = :id', { id: createClientDto.userId })
-      .getOne();
-    if (test) {
+    const userExists = await this.clientsRepository.find({
+      where: { user: { id: createClientDto.userId } },
+    });
+    if (userExists && userExists.length > 0) {
       throw new BadRequestException(
         `El usuario con id ${createClientDto.userId} ya esta asignado a un cliente`,
       );
@@ -36,13 +35,16 @@ export class ClientsService {
     });
     if (nameExists && nameExists.length > 0) {
       throw new BadRequestException(
-        `El nombre ${createClientDto.name} ya existe`,
+        `La razón social ${createClientDto.name} ya existe`,
       );
     }
     const { user } = await this.usersService.findOne(createClientDto.userId);
-    let client = plainToClass(Client, createClientDto);
-    client.user = user;
-    client = await this.clientsRepository.save(client);
+
+    const client = await this.clientsRepository.save({
+      ...createClientDto,
+      user,
+    });
+
     return { ok: true, client };
   }
 
@@ -68,13 +70,14 @@ export class ClientsService {
   }
 
   async findOneByUserId(userId: number) {
+    const { user } = await this.usersService.findOne(userId);
     const client = await this.clientsRepository.findOne({
       where: { user: { id: userId } },
-      join: { alias: 'client', leftJoinAndSelect: { user: 'client.user' } },
+      // join: { alias: 'client', leftJoinAndSelect: { user: 'client.user' } },
     });
     if (!client) {
       throw new BadRequestException(
-        `No existe ningún cliente para el usuario con identificador ${userId}`,
+        `No existe ningún cliente para el usuario '${user.username}'. Contacte con el administrador para crear el perfil de cliente`,
       );
     }
     return { ok: true, client };
@@ -95,13 +98,13 @@ export class ClientsService {
     const cifExists = await this.clientsRepository.find({
       where: { cif: updateClientDto.cif },
     });
-    if (cifExists && cifExists.length > 0) {
+    if (cifExists && cifExists.length > 0 && cifExists[0].id !== id) {
       throw new BadRequestException(`El cif ${updateClientDto.cif} ya existe`);
     }
     const nameExists = await this.clientsRepository.find({
       where: { name: updateClientDto.name },
     });
-    if (nameExists && nameExists.length > 0) {
+    if (nameExists && nameExists.length > 0 && cifExists[0].id !== id) {
       throw new BadRequestException(
         `El nombre ${updateClientDto.name} ya existe`,
       );
@@ -111,5 +114,49 @@ export class ClientsService {
       updateClientDto,
     );
     return { ok: updateResult.affected > 0 ? true : false };
+  }
+
+  async toExcel(term: string): Promise<Readable> {
+    let clients: Client[] = [];
+
+    clients = await this.clientsRepository.find();
+
+    if (term !== '-') {
+      clients = clients.filter((client) => {
+        return (
+          client.name
+            .trim()
+            .toLowerCase()
+            .includes(term.trim().toLowerCase()) ||
+          client.city.trim().toLowerCase().includes(term.trim().toLowerCase())
+        );
+      });
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('test');
+    sheet.columns = [
+      { header: 'CIF', key: 'cif' },
+      { header: 'Razón Social', key: 'name' },
+      { header: 'Dirección', key: 'address' },
+      { header: 'Localidad', key: 'city' },
+      { header: 'Provincia', key: 'province' },
+    ];
+
+    clients.forEach((client) => {
+      sheet.addRow([
+        client.cif,
+        client.name,
+        client.address,
+        client.cif,
+        client.province,
+      ]);
+    });
+
+    const stream = new Readable();
+    const buffer = await workbook.xlsx.writeBuffer();
+    stream.push(buffer);
+    stream.push(null);
+    return stream;
   }
 }

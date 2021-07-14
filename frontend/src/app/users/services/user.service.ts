@@ -5,7 +5,7 @@ import { PaginatorDto } from '../../shared/interfaces/paginator.interface';
 import { environment } from './../../../environments/environment';
 import {
   IUserCreateResponse,
-  IUsersGetAllResponse
+  IUsersGetAllResponse,
 } from './../interfaces/users-res.interfaces';
 import { UpdateUserDto } from './../interfaces/users.interfaces';
 import { Role } from './../users-roles-enum';
@@ -18,7 +18,7 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  findAll(paginatorDto: PaginatorDto): Observable<IUsersGetAllResponse> {
+  findAll(paginatorDto?: PaginatorDto): Observable<IUsersGetAllResponse> {
     return this.http.get<IUsersGetAllResponse>(this._baseUrl, {
       params: { ...paginatorDto },
     });
@@ -32,11 +32,15 @@ export class UserService {
     return this.http.patch<boolean>(this._baseUrl + `/${id}`, updateUserDto);
   }
 
-  changeRole(id: number, role: Role) {
-    return this.http.patch<boolean>(this._baseUrl + `/${id}`, { role });
+  changeRole(id: number, role: Role): Observable<boolean> {
+    return this.http.patch<boolean>(this._baseUrl + `/change-role/${id}`, {
+      role,
+    });
   }
 
-  removeOrActivate(id: number, isActive: boolean) {
-    return this.http.patch<boolean>(this._baseUrl + `/${id}`, { isActive });
+  removeOrActivate(id: number, isActive: boolean): Observable<boolean> {
+    return this.http.patch<boolean>(this._baseUrl + `/activate/${id}`, {
+      isActive,
+    });
   }
 }

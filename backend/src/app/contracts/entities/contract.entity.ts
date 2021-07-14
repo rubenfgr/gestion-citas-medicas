@@ -33,6 +33,6 @@ export class Contract {
   @Column({ type: 'tinyint', default: 0 })
   examsDone: number;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: true })
   isActive: boolean;
 }

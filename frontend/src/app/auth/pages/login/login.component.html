@@ -1,1 +1,21 @@
-<p>login works!</p>
+<form (ngSubmit)="login()" [formGroup]="loginForm">
+  <div class="bg-opacity-6 p-5 rounded shadow-lg d-flex flex-column">
+    <mat-form-field>
+      <mat-label>Usuario</mat-label>
+      <input matInput formControlName="username" type="text" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Contraseña</mat-label>
+      <input matInput formControlName="password" type="password" autocomplete/>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" class="mt-3">
+      Identificarse
+    </button>
+
+    <div class="mt-3">
+      <h3>¿No está registrado? <a [routerLink]="['/auth/register']">Registrarse</a></h3>
+    </div>
+  </div>
+</form>

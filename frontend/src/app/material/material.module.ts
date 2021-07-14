@@ -15,6 +15,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 @NgModule({
   exports: [
     MatButtonModule,
@@ -36,6 +39,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatSortModule,
     MatDialogModule,
     MatDatepickerModule,
+    MatSelectModule,
+    MatCheckboxModule,
   ],
 })
 export class MaterialModule {}

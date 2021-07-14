@@ -8,7 +8,7 @@ export interface IClientCreateResponse {
 export interface IClientGetByIdResponse extends IClientCreateResponse {}
 
 export interface IClient {
-  userId: string;
+  userId: number;
   name: string;
   address: string;
   city: string;

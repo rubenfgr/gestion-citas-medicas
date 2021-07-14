@@ -21,7 +21,13 @@ enum CalendarView {
 @Component({
   selector: 'app-meetings-calendar',
   templateUrl: './meetings-calendar.component.html',
-  styles: [],
+  styles: [
+    `
+      full-calendar {
+        height: 100vh;
+      }
+    `,
+  ],
 })
 export class MeetingsCalendarComponent implements AfterViewInit {
   @ViewChild(FullCalendarComponent) calendarComponent!: FullCalendarComponent;
@@ -52,10 +58,10 @@ export class MeetingsCalendarComponent implements AfterViewInit {
   }
 
   adjustView(): void {
-    if (window.innerWidth < 550) {
-      this.calendarComponent.getApi().changeView(CalendarView.LIST);
+    if (window.innerWidth < 750) {
+      this.calendarComponent?.getApi()?.changeView(CalendarView.LIST);
     } else {
-      this.calendarComponent.getApi().changeView(CalendarView.GRID);
+      this.calendarComponent?.getApi()?.changeView(CalendarView.GRID);
     }
   }
 
@@ -104,7 +110,7 @@ export class MeetingsCalendarComponent implements AfterViewInit {
       const event = this.calendarComponent
         .getApi()
         .getEventById(meeting.id.toString());
-      if (event) {
+      if (event && meeting.contract.client) {
         event.setProp('title', meeting.contract.client.name);
         event.setProp('color', color);
       }
@@ -113,7 +119,7 @@ export class MeetingsCalendarComponent implements AfterViewInit {
   }
 
   private createEvent(meeting: IMeeting) {
-    if (meeting && this.calendarComponent && this.calendarComponent.getApi()) {
+    if (meeting && meeting.contract.client && this.calendarComponent && this.calendarComponent.getApi()) {
       const color = meeting.isActive
         ? meeting.confirmed
           ? MeetingColor.CONFIRMED
@@ -127,8 +133,6 @@ export class MeetingsCalendarComponent implements AfterViewInit {
       this.calendarComponent.getApi().render();
     }
   }
-
-
 
   handleDayClick(arg: any) {
     this.matDialog.open(MeetingCreateDialogComponent, {
@@ -144,36 +148,38 @@ export class MeetingsCalendarComponent implements AfterViewInit {
     const daysBeforeMonth = new Date(year, beforeMonth, 0).getDate();
     const before = new Date(year, beforeMonth, daysBeforeMonth);
     const after = new Date(year, month + 1, 1);
+
     this.loadMeetings({ before, after });
   }
 
   private loadMeetings(datesBetweenDto: DatesBetweenDto) {
     const user = this.authService.user;
-    if (user) {
+    if (user && user.role === Role.CLIENT) {
       this.clientService.findOneByUserId(user.id).subscribe((res) => {
-        this.loadMeetingByClientId(user, datesBetweenDto, res.client.id);
+        this.loadMeetingByClientId(datesBetweenDto, res.client.id);
       });
+    } else {
+      this.loadMeetingAllTree(datesBetweenDto);
     }
   }
 
   private loadMeetingByClientId(
-    user: IUser,
     datesBetweenDto: DatesBetweenDto,
     clientId: number
   ) {
-    if (user?.role === Role.CLIENT) {
-      this.meetingsService
-        .findAllByClientIdDatesBetween(clientId, datesBetweenDto)
-        .subscribe((res) => {
-          this.pushEventsOnCalendar(res.meetings);
-        });
-    } else {
-      this.meetingsService
-        .findAllTreeDatesBetween(datesBetweenDto)
-        .subscribe((res) => {
-          this.pushEventsOnCalendar(res.meetings);
-        });
-    }
+    this.meetingsService
+      .findAllByClientIdDatesBetween(clientId, datesBetweenDto)
+      .subscribe((res) => {
+        this.pushEventsOnCalendar(res.meetings);
+      });
+  }
+
+  private loadMeetingAllTree(datesBetweenDto: DatesBetweenDto) {
+    this.meetingsService
+      .findAllTreeDatesBetween(datesBetweenDto)
+      .subscribe((res) => {
+        this.pushEventsOnCalendar(res.meetings);
+      });
   }
 
   private pushEventsOnCalendar(meetings: IMeeting[]) {
@@ -187,10 +193,12 @@ export class MeetingsCalendarComponent implements AfterViewInit {
         : MeetingColor.DEACTIVE;
       this.calendarComponent.getApi().addEvent({
         date: meeting.date,
-        title: meeting.contract.client.name,
+        title: meeting.contract.client?.name,
         color,
         id: meeting.id.toString(),
       });
     });
+
+    this.calendarComponent.getApi().render();
   }
 }

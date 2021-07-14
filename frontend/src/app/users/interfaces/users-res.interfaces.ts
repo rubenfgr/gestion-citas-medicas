@@ -1,3 +1,4 @@
+import { Role } from './../users-roles-enum';
 export interface IUserCreateResponse {
   ok: boolean;
   user: IUser;
@@ -8,7 +9,7 @@ export interface IUserGetByIdResponse extends IUserCreateResponse {}
 export interface IUser {
   username: string;
   email: string;
-  role: string;
+  role: Role;
   id: number;
   isActive: boolean;
 }

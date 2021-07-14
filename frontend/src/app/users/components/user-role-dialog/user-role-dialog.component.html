@@ -1,0 +1,11 @@
+<mat-form-field appearance="fill">
+  <mat-label>Seleccione un rol</mat-label>
+  <mat-select [(ngModel)]="role">
+    <mat-option value="none">Anonimo</mat-option>
+    <mat-option value="client">Cliente</mat-option>
+    <mat-option value="doctor">Doctor</mat-option>
+    <mat-option value="admin">Administrador</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<button mat-raised-button color="primary" (click)="save()">Guardar</button>

@@ -1,0 +1,65 @@
+<h1>{{ title }}</h1>
+<hr />
+
+<form (ngSubmit)="save()" [formGroup]="formContract">
+  <div class="d-flex flex-column gap-2">
+
+    <!-- client name -->
+    <div class="flex-grow-1">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Cliente</mat-label>
+        <input
+          (input)="search()"
+          (ngModelChange)="search()"
+          matInput
+          type="text"
+          formControlName="clientName"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-selection-list
+        *ngIf="showSuggestion"
+        [multiple]="false"
+        (click)="(showSuggestion)"
+        class="position-absolute bg-light suggestion"
+      >
+        <mat-list-option
+          *ngFor="let client of clientsSuggested"
+          (click)="selectSuggestedClient(client.name)"
+          (keyup.enter)="selectSuggestedClient(client.name)"
+          [value]="client.name"
+          >{{ client.name }}</mat-list-option
+        >
+      </mat-selection-list>
+    </div>
+
+
+    <!-- date start -->
+    <mat-form-field appearance="fill">
+      <mat-label>Fecha de inicio</mat-label>
+      <input matInput [matDatepicker]="picker1" formControlName="dateStart" />
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+
+    <!-- date end -->
+    <mat-form-field appearance="fill">
+      <mat-label>Fecha de finalización</mat-label>
+      <input matInput [matDatepicker]="picker2" formControlName="dateEnd" />
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+
+    <!-- exams -->
+    <mat-form-field appearance="fill">
+      <mat-label>Reconocimientos</mat-label>
+      <input matInput type="number" formControlName="exams" />
+    </mat-form-field>
+
+    <div class="d-flex flex-wrap justify-content-end">
+      <button mat-button color="warn" mat-dialog-close>Cerrar</button>
+      <button mat-raised-button color="primary" type="submit">Guardar</button>
+    </div>
+  </div>
+</form>

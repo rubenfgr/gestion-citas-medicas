@@ -1,3 +1,4 @@
+import { Role } from './../../../users/users-roles-enum';
 import { IRoute } from './../../interfaces/route.interface';
 import { NavigationService } from './../../services/navigation.service';
 import { IUser } from '../../../users/interfaces/users-res.interfaces';
@@ -36,6 +37,8 @@ export class NavigationComponent {
   title = 'Gestión de citas médicas';
   user: IUser | null = null;
   routes: IRoute[] = [];
+  Role = Role;
+  testing = 'ñlaksjfñlaksjdalkfsdj';
 
   constructor(
     private authService: AuthService,
@@ -44,9 +47,12 @@ export class NavigationComponent {
 
   ngOnInit(): void {
     this.user = this.authService.user;
-
     this.navigationService
       .getRoutes()
       .subscribe((routes) => (this.routes = routes));
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

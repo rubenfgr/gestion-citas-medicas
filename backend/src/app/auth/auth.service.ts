@@ -29,6 +29,10 @@ export class AuthService {
     };
   }
 
+  async changePass(id: number, password: string) {
+    return this.usersService.changePass(id, password);
+  }
+
   renew(user: User) {
     const access_token = this.jwtService.sign({ uid: user.id });
     return {

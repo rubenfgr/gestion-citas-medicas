@@ -14,7 +14,7 @@ export class Client {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { eager: true })
   @JoinColumn()
   user: User;
 

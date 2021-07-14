@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styles: [],
 })
 export class MeetingsHomeComponent implements OnInit {
-  constructor(private meetingsService: MeetingsService) {}
+  constructor() {}
 
   ngOnInit(): void {}
 }
