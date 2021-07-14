@@ -1,15 +1,14 @@
-import { IUser } from './../../../users/interfaces/users-res.interfaces';
-import { ClientService } from './../../../clients/services/client.service';
-import { MeetingCreateDialogComponent } from './../../components/meeting-create-dialog/meeting-create-dialog.component';
-import { MeetingDialogComponent } from './../../components/meeting-dialog/meeting-dialog.component';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarOptions, FullCalendarComponent } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import { AuthService } from './../../../auth/services/auth.service';
+import { ClientService } from './../../../clients/services/client.service';
 import { DatesBetweenDto } from './../../../shared/interfaces/dates-between.dto';
 import { Role } from './../../../users/users-roles-enum';
+import { MeetingCreateDialogComponent } from './../../components/meeting-create-dialog/meeting-create-dialog.component';
+import { MeetingDialogComponent } from './../../components/meeting-dialog/meeting-dialog.component';
 import { IMeeting } from './../../interfaces/meeting-res.interfaces';
 import { MeetingColor } from './../../meetings-colors.enum';
 import { MeetingsService } from './../../services/meetings.service';
@@ -21,13 +20,7 @@ enum CalendarView {
 @Component({
   selector: 'app-meetings-calendar',
   templateUrl: './meetings-calendar.component.html',
-  styles: [
-    `
-      full-calendar {
-        height: 100vh;
-      }
-    `,
-  ],
+  styleUrls: ['./meetings-calendar.component.scss'],
 })
 export class MeetingsCalendarComponent implements AfterViewInit {
   @ViewChild(FullCalendarComponent) calendarComponent!: FullCalendarComponent;
@@ -41,6 +34,8 @@ export class MeetingsCalendarComponent implements AfterViewInit {
     eventClick: this.handleEventClick.bind(this),
     datesSet: this.handleChange.bind(this),
   };
+
+  loading = true;
 
   constructor(
     private meetingsService: MeetingsService,
@@ -119,7 +114,12 @@ export class MeetingsCalendarComponent implements AfterViewInit {
   }
 
   private createEvent(meeting: IMeeting) {
-    if (meeting && meeting.contract.client && this.calendarComponent && this.calendarComponent.getApi()) {
+    if (
+      meeting &&
+      meeting.contract.client &&
+      this.calendarComponent &&
+      this.calendarComponent.getApi()
+    ) {
       const color = meeting.isActive
         ? meeting.confirmed
           ? MeetingColor.CONFIRMED
@@ -140,16 +140,23 @@ export class MeetingsCalendarComponent implements AfterViewInit {
     });
   }
 
+  month = -1;
+
   handleChange(arg: any) {
     const date = this.calendarComponent.getApi().getDate();
     const year = date.getFullYear();
-    const month = date.getMonth();
-    const beforeMonth = month == 1 ? 12 : month - 1;
-    const daysBeforeMonth = new Date(year, beforeMonth, 0).getDate();
-    const before = new Date(year, beforeMonth, daysBeforeMonth);
-    const after = new Date(year, month + 1, 1);
 
-    this.loadMeetings({ before, after });
+    console.log(this.month, date.getMonth());
+
+    if (this.month !== date.getMonth()) {
+      this.month = date.getMonth();
+      const beforeMonth = this.month == 1 ? 12 : this.month - 1;
+      const daysBeforeMonth = new Date(year, beforeMonth, 0).getDate();
+      const before = new Date(year, beforeMonth, daysBeforeMonth);
+      const after = new Date(year, this.month + 1, 1);
+
+      this.loadMeetings({ before, after });
+    }
   }
 
   private loadMeetings(datesBetweenDto: DatesBetweenDto) {
@@ -167,18 +174,22 @@ export class MeetingsCalendarComponent implements AfterViewInit {
     datesBetweenDto: DatesBetweenDto,
     clientId: number
   ) {
+    this.loading = true;
     this.meetingsService
       .findAllByClientIdDatesBetween(clientId, datesBetweenDto)
       .subscribe((res) => {
         this.pushEventsOnCalendar(res.meetings);
+        this.loading = false;
       });
   }
 
   private loadMeetingAllTree(datesBetweenDto: DatesBetweenDto) {
+    this.loading = true;
     this.meetingsService
       .findAllTreeDatesBetween(datesBetweenDto)
       .subscribe((res) => {
         this.pushEventsOnCalendar(res.meetings);
+        this.loading = false;
       });
   }
 

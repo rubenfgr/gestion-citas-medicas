@@ -67,7 +67,7 @@ export default class CreateUsers implements Seeder {
           client,
           isActive: false,
         });
-        for (let x = 0; x < 3; x++) {
+        for (let x = 0; x < 30; x++) {
           await factory(Meeting)().create({ contract });
           counter++;
         }
@@ -78,7 +78,7 @@ export default class CreateUsers implements Seeder {
           client,
           isActive: true,
         });
-        for (let x = 0; x < 3; x++) {
+        for (let x = 0; x < 30; x++) {
           await factory(Meeting)().create({
             contract,
             examsDone: Math.floor(Math.random() * 15),
@@ -90,7 +90,7 @@ export default class CreateUsers implements Seeder {
         clc.yellow(' ===> ') +
           clc.blue(counter) +
           clc.yellow('/') +
-          clc.blue(x3 * 3),
+          clc.blue(x3 * 30),
       );
     }
   }

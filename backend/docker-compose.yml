@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  db:
+    container_name: gcm_db
+    image: mariadb
+    restart: always
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root12345
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: gestion_citas_medicas
+    volumes:
+      - vol-gcm-db:/var/lib/mysql
+
+  adminer:
+    container_name: gcm_adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  backend:
+    container_name: gcm_backend
+    build: .
+    user: node
+    working_dir: /usr/src/app
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
+      - DB_DATABASE=gestion_citas_medicas
+      - DB_SYNCHRONIZE=true
+      - JWT_SECRET=85a9642c-1a34-43f2-8e95-d7c37d815294
+    ports:
+      - 3000:3000
+
+volumes:
+  vol-gcm-db:
